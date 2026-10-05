@@ -1,32 +1,140 @@
-fetch("https://api.open-meteo.com/v1/forecast?latitude=-32.365&longitude=-62.312&current=temperature_2m,relative_humidity_2m,pressure_msl,wind_speed_10m&wind_speed_unit=kmh")
-    .then(respuesta => respuesta.json())
-    .then(datos => {
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        const clima = datos.current;
+    <title>Clima de Noetinger</title>
 
-        const temperatura = clima.temperature_2m;
-        const viento = clima.wind_speed_10m;
-        const humedad = clima.relative_humidity_2m;
-        const presion = clima.pressure_msl;
+    <!-- Manifest -->
+    <link rel="manifest" href="manifest.json">
 
-        document.getElementById("temperatura").textContent = temperatura;
-        document.getElementById("viento").textContent = viento;
-        document.getElementById("humedad").textContent = humedad;
-        document.getElementById("presion").textContent = presion;
+    <!-- Color de la aplicación -->
+    <meta name="theme-color" content="#2196f3">
 
-        const temperaturaOK = temperatura >= 10 && temperatura <= 30;
-        const vientoOK = viento >= 5 && viento <= 30;
-        const humedadOK = humedad >= 30 && humedad <= 80;
-        const presionOK = presion >= 1000 && presion <= 1030;
-
-        if (temperaturaOK && vientoOK && humedadOK && presionOK) {
-            document.getElementById("resultado").textContent = "SI";
-        } else {
-            document.getElementById("resultado").textContent = "NO";
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: #f2f7ff;
+            margin: 0;
+            padding: 30px;
         }
-    })
-    .catch(error => {
-        console.error(error);
-        document.getElementById("resultado").textContent =
-            "No se pudieron obtener los datos";
-    });
+
+        h1 {
+            color: #2196f3;
+        }
+
+        .dato {
+            background: white;
+            margin: 15px auto;
+            padding: 15px;
+            max-width: 400px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .dato strong {
+            display: block;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        #resultado {
+            font-size: 30px;
+            font-weight: bold;
+            margin-top: 25px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>🌤️ Clima de Noetinger</h1>
+
+    <div class="dato">
+        <strong>🌡️ Temperatura</strong>
+        <span id="temperatura">Cargando...</span> °C
+    </div>
+
+    <div class="dato">
+        <strong>💨 Viento</strong>
+        <span id="viento">Cargando...</span> km/h
+    </div>
+
+    <div class="dato">
+        <strong>💧 Humedad</strong>
+        <span id="humedad">Cargando...</span> %
+    </div>
+
+    <div class="dato">
+        <strong>🌡️ Presión</strong>
+        <span id="presion">Cargando...</span> hPa
+    </div>
+
+    <div class="dato">
+        <strong>¿Condiciones adecuadas?</strong>
+        <span id="resultado">Cargando...</span>
+    </div>
+
+
+    <script>
+
+        fetch("https://api.open-meteo.com/v1/forecast?latitude=-32.365&longitude=-62.312&current=temperature_2m,relative_humidity_2m,pressure_msl,wind_speed_10m&wind_speed_unit=kmh")
+
+        .then(respuesta => respuesta.json())
+
+        .then(datos => {
+
+            const clima = datos.current;
+
+            const temperatura = clima.temperature_2m;
+            const viento = clima.wind_speed_10m;
+            const humedad = clima.relative_humidity_2m;
+            const presion = clima.pressure_msl;
+
+
+            document.getElementById("temperatura").textContent = temperatura;
+
+            document.getElementById("viento").textContent = viento;
+
+            document.getElementById("humedad").textContent = humedad;
+
+            document.getElementById("presion").textContent = presion;
+
+
+            const temperaturaOK = temperatura >= 10 && temperatura <= 30;
+
+            const vientoOK = viento >= 5 && viento <= 30;
+
+            const humedadOK = humedad >= 30 && humedad <= 80;
+
+            const presionOK = presion >= 1000 && presion <= 1030;
+
+
+            if (temperaturaOK && vientoOK && humedadOK && presionOK) {
+
+                document.getElementById("resultado").textContent = "SI";
+
+            } else {
+
+                document.getElementById("resultado").textContent = "NO";
+
+            }
+
+        })
+
+        .catch(error => {
+
+            console.error(error);
+
+            document.getElementById("resultado").textContent =
+                "No se pudieron obtener los datos";
+
+        });
+
+    </script>
+
+</body>
+</html>
