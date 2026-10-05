@@ -1,271 +1,154 @@
-```html
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Condiciones para fumigar</title>
-
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#2196f3">
-
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background: #f2f7ff;
-            margin: 0;
-            padding: 30px;
-        }
-
-        h1 {
-            color: #2196f3;
-        }
-
-        .dato {
-            background: white;
-            margin: 15px auto;
-            padding: 15px;
-            max-width: 450px;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-        }
-
-        .dato strong {
-            display: block;
-            font-size: 18px;
-            margin-bottom: 8px;
-        }
-
-        .circulo {
-            display: inline-block;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            margin-left: 10px;
-            vertical-align: middle;
-        }
+```javascript
+// ESTADOS INDIVIDUALES
 
-        .amarillo {
-            background-color: #ffd900;
-        }
+let estados = [];
 
-        #resultado {
-            font-size: 30px;
-            font-weight: bold;
-            margin-top: 25px;
-        }
-    </style>
-</head>
 
-<body>
+// 🌡️ TEMPERATURA
 
-    <h1>🌱 Condiciones para fumigar</h1>
+if (temperatura < minTemperatura || temperatura > maxTemperatura) {
 
-    <div class="dato">
-        <strong>🌡️ Temperatura</strong>
-        <span id="temperatura">Cargando...</span> °C
-        <span id="circuloTemperatura"></span>
-    </div>
+    document.getElementById("circuloTemperatura").className =
+        "circulo rojo";
 
-    <div class="dato">
-        <strong>💨 Viento</strong>
-        <span id="viento">Cargando...</span> km/h
-        <span id="circuloViento"></span>
-    </div>
+    estados.push(false);
 
-    <div class="dato">
-        <strong>💧 Humedad</strong>
-        <span id="humedad">Cargando...</span> %
-        <span id="circuloHumedad"></span>
-    </div>
+} else if (temperatura >= mitadTemperatura) {
 
-    <div class="dato">
-        <strong>🌡️ Presión</strong>
-        <span id="presion">Cargando...</span> hPa
-        <span id="circuloPresion"></span>
-    </div>
+    document.getElementById("circuloTemperatura").className =
+        "circulo amarillo";
 
-    <div class="dato">
-        <strong>¿Se puede fumigar?</strong>
-        <span id="resultado">⏳</span>
-    </div>
+    estados.push(true);
 
+} else {
 
-    <script>
+    document.getElementById("circuloTemperatura").className =
+        "circulo verde";
 
-        fetch("https://api.open-meteo.com/v1/forecast?latitude=-32.365&longitude=-62.312&current=temperature_2m,relative_humidity_2m,pressure_msl,wind_speed_10m&wind_speed_unit=kmh")
+    estados.push(true);
+}
 
-        .then(respuesta => respuesta.json())
 
-        .then(datos => {
+// 💨 VIENTO
 
-            const clima = datos.current;
+if (viento < minViento || viento > maxViento) {
 
-            const temperatura = clima.temperature_2m;
-            const viento = clima.wind_speed_10m;
-            const humedad = clima.relative_humidity_2m;
-            const presion = clima.pressure_msl;
+    document.getElementById("circuloViento").className =
+        "circulo rojo";
 
+    estados.push(false);
 
-            // MOSTRAR DATOS
+} else if (viento >= mitadViento) {
 
-            document.getElementById("temperatura").textContent =
-                temperatura;
+    document.getElementById("circuloViento").className =
+        "circulo amarillo";
 
-            document.getElementById("viento").textContent =
-                viento;
+    estados.push(true);
 
-            document.getElementById("humedad").textContent =
-                humedad;
+} else {
 
-            document.getElementById("presion").textContent =
-                presion;
+    document.getElementById("circuloViento").className =
+        "circulo verde";
 
+    estados.push(true);
+}
 
-            // RANGOS PERMITIDOS
 
-            const minTemperatura = 10;
-            const maxTemperatura = 25;
+// 💧 HUMEDAD
 
-            const minViento = 5;
-            const maxViento = 15;
+if (humedad < minHumedad || humedad > maxHumedad) {
 
-            const minHumedad = 30;
-            const maxHumedad = 80;
+    document.getElementById("circuloHumedad").className =
+        "circulo rojo";
 
-            const minPresion = 1000;
-            const maxPresion = 1030;
+    estados.push(false);
 
+} else if (humedad >= mitadHumedad) {
 
-            // MITAD DE CADA RANGO
+    document.getElementById("circuloHumedad").className =
+        "circulo amarillo";
 
-            const mitadTemperatura =
-                (minTemperatura + maxTemperatura) / 2;
+    estados.push(true);
 
-            const mitadViento =
-                (minViento + maxViento) / 2;
+} else {
 
-            const mitadHumedad =
-                (minHumedad + maxHumedad) / 2;
+    document.getElementById("circuloHumedad").className =
+        "circulo verde";
 
-            const mitadPresion =
-                (minPresion + maxPresion) / 2;
+    estados.push(true);
+}
 
 
-            // CONDICIONES
+// 🌡️ PRESIÓN
 
-            const temperaturaOK =
-                temperatura >= minTemperatura &&
-                temperatura <= maxTemperatura;
+if (presion < minPresion || presion > maxPresion) {
 
-            const vientoOK =
-                viento >= minViento &&
-                viento <= maxViento;
+    document.getElementById("circuloPresion").className =
+        "circulo rojo";
 
-            const humedadOK =
-                humedad >= minHumedad &&
-                humedad <= maxHumedad;
+    estados.push(false);
 
-            const presionOK =
-                presion >= minPresion &&
-                presion <= maxPresion;
+} else if (presion >= mitadPresion) {
 
+    document.getElementById("circuloPresion").className =
+        "circulo amarillo";
 
-            // CÍRCULOS AMARILLOS
-            // Aparecen cuando está en la mitad o más
+    estados.push(true);
 
-            if (temperatura >= mitadTemperatura && temperaturaOK) {
+} else {
 
-                document.getElementById("circuloTemperatura").className =
-                    "circulo amarillo";
-            }
+    document.getElementById("circuloPresion").className =
+        "circulo verde";
 
-            if (viento >= mitadViento && vientoOK) {
+    estados.push(true);
+}
 
-                document.getElementById("circuloViento").className =
-                    "circulo amarillo";
-            }
 
-            if (humedad >= mitadHumedad && humedadOK) {
+// RESULTADO GENERAL
 
-                document.getElementById("circuloHumedad").className =
-                    "circulo amarillo";
-            }
+const todoOK = estados.every(estado => estado === true);
 
-            if (presion >= mitadPresion && presionOK) {
+const hayPrecaucion =
+    temperatura >= mitadTemperatura ||
+    viento >= mitadViento ||
+    humedad >= mitadHumedad ||
+    presion >= mitadPresion;
 
-                document.getElementById("circuloPresion").className =
-                    "circulo amarillo";
-            }
 
+if (!todoOK) {
 
-            // TODO ESTÁ DENTRO DEL RANGO
+    document.getElementById("resultado").textContent =
+        "❌ NO SE PUEDE FUMIGAR";
 
-            const todoOK =
-                temperaturaOK &&
-                vientoOK &&
-                humedadOK &&
-                presionOK;
+    document.getElementById("resultado").style.color =
+        "red";
 
+} else if (hayPrecaucion) {
 
-            // HAY ALGUNA VARIABLE EN LA MITAD O MÁS
+    document.getElementById("resultado").textContent =
+        "🟡 SE PUEDE CON PRECAUCIÓN";
 
-            const precaucion =
-                (temperatura >= mitadTemperatura) ||
-                (viento >= mitadViento) ||
-                (humedad >= mitadHumedad) ||
-                (presion >= mitadPresion);
+    document.getElementById("resultado").style.color =
+        "#d6a600";
 
+} else {
 
-            // RESULTADO FINAL
+    document.getElementById("resultado").textContent =
+        "✅ SE PUEDE FUMIGAR";
 
-            if (todoOK && precaucion) {
+    document.getElementById("resultado").style.color =
+        "green";
+}
+```
 
-                document.getElementById("resultado").textContent =
-                    "🟡 SE PUEDE CON PRECAUCIÓN";
+Y en tu `<style>` agregá estos dos colores:
 
-                document.getElementById("resultado").style.color =
-                    "#d6a600";
+```css
+.verde {
+    background-color: green;
+}
 
-            }
-
-            else if (todoOK) {
-
-                document.getElementById("resultado").textContent =
-                    "✅ SE PUEDE FUMIGAR";
-
-                document.getElementById("resultado").style.color =
-                    "green";
-
-            }
-
-            else {
-
-                document.getElementById("resultado").textContent =
-                    "❌ NO SE PUEDE FUMIGAR";
-
-                document.getElementById("resultado").style.color =
-                    "red";
-            }
-
-        })
-
-
-        .catch(error => {
-
-            console.error(error);
-
-            document.getElementById("resultado").textContent =
-                "❌ Error al obtener los datos";
-
-            document.getElementById("resultado").style.color =
-                "red";
-
-        });
-
-    </script>
-
-</body>
-</html>
+.rojo {
+    background-color: red;
+}
 ```
