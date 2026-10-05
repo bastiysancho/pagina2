@@ -1,102 +1,32 @@
+fetch("https://api.open-meteo.com/v1/forecast?latitude=-32.365&longitude=-62.312&current=temperature_2m,relative_humidity_2m,pressure_msl,wind_speed_10m&wind_speed_unit=kmh")
+    .then(respuesta => respuesta.json())
+    .then(datos => {
 
-    
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Promo 2027</title>
-    <link rel="manifest" href="manifest.json">
+        const clima = datos.current;
 
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #111;
-            color: white;
-            text-align: center;
+        const temperatura = clima.temperature_2m;
+        const viento = clima.wind_speed_10m;
+        const humedad = clima.relative_humidity_2m;
+        const presion = clima.pressure_msl;
+
+        document.getElementById("temperatura").textContent = temperatura;
+        document.getElementById("viento").textContent = viento;
+        document.getElementById("humedad").textContent = humedad;
+        document.getElementById("presion").textContent = presion;
+
+        const temperaturaOK = temperatura >= 10 && temperatura <= 30;
+        const vientoOK = viento >= 5 && viento <= 30;
+        const humedadOK = humedad >= 30 && humedad <= 80;
+        const presionOK = presion >= 1000 && presion <= 1030;
+
+        if (temperaturaOK && vientoOK && humedadOK && presionOK) {
+            document.getElementById("resultado").textContent = "SI";
+        } else {
+            document.getElementById("resultado").textContent = "NO";
         }
-
-        header {
-            background-color: #222;
-            padding: 30px;
-        }
-
-        h1 {
-            font-size: 50px;
-            margin: 10px;
-        }
-
-        h2 {
-            color: #00bfff;
-        }
-
-        .contenedor {
-            padding: 40px 20px;
-        }
-
-        .tarjeta {
-            background-color: #222;
-            padding: 25px;
-            margin: 20px auto;
-            max-width: 600px;
-            border-radius: 15px;
-        }
-
-        .boton {
-            display: inline-block;
-            padding: 12px 25px;
-            background-color: #00bfff;
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            margin-top: 15px;
-        }
-
-        footer {
-            background-color: #222;
-            padding: 20px;
-            margin-top: 40px;
-        }
-    </style>
-</head>
-
-<body>
-
-    <header>
-        <h1>PROMO 2027 💣</h1>
-        <h2>Una generación para recordar</h2>
-    </header>
-
-    <div class="contenedor">
-
-        <div class="tarjeta">
-            <h2>¿Quiénes somos?</h2>
-            <p>
-                Somos la Promo 2027, un grupo de estudiantes
-                compartiendo nuestros últimos momentos de secundaria.
-            </p>
-        </div>
-
-        <div class="tarjeta">
-            <h2>Nuestro año</h2>
-            <p>
-                Amistad, risas, viajes, anécdotas y muchos momentos
-                que vamos a recordar para siempre.
-            </p>
-        </div>
-
-        <div class="tarjeta">
-            <h2>Promo 2027 🔥</h2>
-            <p>El último año. La última etapa. El mejor recuerdo.</p>
-            <a href="#" class="boton">Ver más</a>
-        </div>
-
-    </div>
-
-    <footer>
-        <p>© Promo 2027 - Todos los recuerdos quedan para siempre ❤️</p>
-    </footer>
-
-</body>
-</html>
+    })
+    .catch(error => {
+        console.error(error);
+        document.getElementById("resultado").textContent =
+            "No se pudieron obtener los datos";
+    });
