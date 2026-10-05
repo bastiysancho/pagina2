@@ -1,16 +1,14 @@
-
+```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Clima de Noetinger</title>
+    <title>Condiciones para fumigar</title>
 
-    <!-- Manifest -->
     <link rel="manifest" href="manifest.json">
 
-    <!-- Color de la aplicación -->
     <meta name="theme-color" content="#2196f3">
 
     <style>
@@ -51,30 +49,38 @@
 
 <body>
 
-    <h1>🌤️ Clima de Noetinger</h1>
+    <h1>🌱 Condiciones para fumigar</h1>
 
     <div class="dato">
         <strong>🌡️ Temperatura</strong>
         <span id="temperatura">Cargando...</span> °C
+        <br>
+        <small>Permitida: 10 °C - 25 °C</small>
     </div>
 
     <div class="dato">
         <strong>💨 Viento</strong>
         <span id="viento">Cargando...</span> km/h
+        <br>
+        <small>Permitido: 5 km/h - 15 km/h</small>
     </div>
 
     <div class="dato">
         <strong>💧 Humedad</strong>
         <span id="humedad">Cargando...</span> %
+        <br>
+        <small>Permitida: 30 % - 80 %</small>
     </div>
 
     <div class="dato">
         <strong>🌡️ Presión</strong>
         <span id="presion">Cargando...</span> hPa
+        <br>
+        <small>Permitida: 1000 hPa - 1030 hPa</small>
     </div>
 
     <div class="dato">
-        <strong>¿Condiciones adecuadas?</strong>
+        <strong>¿Se puede fumigar?</strong>
         <span id="resultado">Cargando...</span>
     </div>
 
@@ -95,6 +101,7 @@
             const presion = clima.pressure_msl;
 
 
+            // Mostrar datos
             document.getElementById("temperatura").textContent = temperatura;
 
             document.getElementById("viento").textContent = viento;
@@ -104,23 +111,36 @@
             document.getElementById("presion").textContent = presion;
 
 
-            const temperaturaOK = temperatura >= 10 && temperatura <= 30;
+            // RANGOS PERMITIDOS
 
-            const vientoOK = viento >= 5 && viento <= 30;
+            const temperaturaOK =
+                temperatura >= 10 && temperatura <= 25;
 
-            const humedadOK = humedad >= 30 && humedad <= 80;
+            const vientoOK =
+                viento >= 5 && viento <= 15;
 
-            const presionOK = presion >= 1000 && presion <= 1030;
+            const humedadOK =
+                humedad >= 30 && humedad <= 80;
 
+            const presionOK =
+                presion >= 1000 && presion <= 1030;
+
+
+            // RESULTADO FINAL
 
             if (temperaturaOK && vientoOK && humedadOK && presionOK) {
 
-                document.getElementById("resultado").textContent = "SI";
+                document.getElementById("resultado").textContent =
+                    "✅ SI";
+
+                document.getElementById("resultado").style.color = "green";
 
             } else {
 
-                document.getElementById("resultado").textContent = "NO";
+                document.getElementById("resultado").textContent =
+                    "❌ NO";
 
+                document.getElementById("resultado").style.color = "red";
             }
 
         })
@@ -138,3 +158,19 @@
 
 </body>
 </html>
+```
+
+### En resumen
+
+Tu programa ahora evalúa las **4 condiciones al mismo tiempo**:
+
+| Condición       |   Mínimo |   Máximo |
+| --------------- | -------: | -------: |
+| 🌡️ Temperatura |    10 °C |    25 °C |
+| 💨 Viento       |   5 km/h |  15 km/h |
+| 💧 Humedad      |     30 % |     80 % |
+| 🌡️ Presión     | 1000 hPa | 1030 hPa |
+
+**Solo muestra `✅ SI` si las cuatro están dentro del rango.** Si una sola está fuera, muestra `❌ NO`.
+
+> Estos rangos son una configuración orientativa para tu proyecto; para una aplicación real, los límites deben ajustarse al producto fitosanitario específico y a su etiqueta/marbete.
