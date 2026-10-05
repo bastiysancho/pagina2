@@ -5,10 +5,10 @@ const todoOK =
     presionOK;
 
 const precaucion =
-    temperatura >= mitadTemperatura ||
-    viento >= mitadViento ||
-    humedad >= mitadHumedad ||
-    presion >= mitadPresion;
+    Math.abs(temperatura - mitadTemperatura) <= 2 ||
+    Math.abs(viento - mitadViento) <= 1 ||
+    Math.abs(humedad - mitadHumedad) <= 5 ||
+    Math.abs(presion - mitadPresion) <= 3;
 
 
 if (todoOK && precaucion) {
