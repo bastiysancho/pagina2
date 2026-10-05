@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -28,7 +27,7 @@
             background: white;
             margin: 15px auto;
             padding: 15px;
-            max-width: 400px;
+            max-width: 450px;
             border-radius: 10px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.15);
         }
@@ -39,10 +38,20 @@
             margin-bottom: 5px;
         }
 
+        .estado {
+            font-size: 28px;
+            margin-left: 10px;
+        }
+
         #resultado {
             font-size: 30px;
             font-weight: bold;
             margin-top: 25px;
+        }
+
+        .rango {
+            color: #666;
+            font-size: 14px;
         }
     </style>
 </head>
@@ -54,36 +63,35 @@
     <div class="dato">
         <strong>🌡️ Temperatura</strong>
         <span id="temperatura">Cargando...</span> °C
-        <br>
-        <small>Permitida: 10 °C - 25 °C</small>
+        <span id="estadoTemperatura" class="estado">⏳</span>
+        <div class="rango">Rango permitido: 10 °C - 25 °C</div>
     </div>
 
     <div class="dato">
         <strong>💨 Viento</strong>
         <span id="viento">Cargando...</span> km/h
-        <br>
-        <small>Permitido: 5 km/h - 15 km/h</small>
+        <span id="estadoViento" class="estado">⏳</span>
+        <div class="rango">Rango permitido: 5 km/h - 15 km/h</div>
     </div>
 
     <div class="dato">
         <strong>💧 Humedad</strong>
         <span id="humedad">Cargando...</span> %
-        <br>
-        <small>Permitida: 30 % - 80 %</small>
+        <span id="estadoHumedad" class="estado">⏳</span>
+        <div class="rango">Rango permitido: 30 % - 80 %</div>
     </div>
 
     <div class="dato">
         <strong>🌡️ Presión</strong>
         <span id="presion">Cargando...</span> hPa
-        <br>
-        <small>Permitida: 1000 hPa - 1030 hPa</small>
+        <span id="estadoPresion" class="estado">⏳</span>
+        <div class="rango">Rango permitido: 1000 hPa - 1030 hPa</div>
     </div>
 
     <div class="dato">
         <strong>¿Se puede fumigar?</strong>
-        <span id="resultado">Cargando...</span>
+        <span id="resultado">⏳</span>
     </div>
-
 
     <script>
 
@@ -100,18 +108,10 @@
             const humedad = clima.relative_humidity_2m;
             const presion = clima.pressure_msl;
 
-
-            // Mostrar datos
             document.getElementById("temperatura").textContent = temperatura;
-
             document.getElementById("viento").textContent = viento;
-
             document.getElementById("humedad").textContent = humedad;
-
             document.getElementById("presion").textContent = presion;
-
-
-            // RANGOS PERMITIDOS
 
             const temperaturaOK =
                 temperatura >= 10 && temperatura <= 25;
@@ -125,20 +125,35 @@
             const presionOK =
                 presion >= 1000 && presion <= 1030;
 
+            document.getElementById("estadoTemperatura").textContent =
+                temperaturaOK ? "✅" : "❌";
 
-            // RESULTADO FINAL
+            document.getElementById("estadoViento").textContent =
+                vientoOK ? "✅" : "❌";
 
-            if (temperaturaOK && vientoOK && humedadOK && presionOK) {
+            document.getElementById("estadoHumedad").textContent =
+                humedadOK ? "✅" : "❌";
+
+            document.getElementById("estadoPresion").textContent =
+                presionOK ? "✅" : "❌";
+
+            const todoOK =
+                temperaturaOK &&
+                vientoOK &&
+                humedadOK &&
+                presionOK;
+
+            if (todoOK) {
 
                 document.getElementById("resultado").textContent =
-                    "✅ SI";
+                    "✅ SE PUEDE FUMIGAR";
 
                 document.getElementById("resultado").style.color = "green";
 
             } else {
 
                 document.getElementById("resultado").textContent =
-                    "❌ NO";
+                    "❌ NO SE PUEDE FUMIGAR";
 
                 document.getElementById("resultado").style.color = "red";
             }
@@ -150,7 +165,7 @@
             console.error(error);
 
             document.getElementById("resultado").textContent =
-                "No se pudieron obtener los datos";
+                "❌ Error al obtener los datos";
 
         });
 
@@ -158,19 +173,3 @@
 
 </body>
 </html>
-```
-
-### En resumen
-
-Tu programa ahora evalúa las **4 condiciones al mismo tiempo**:
-
-| Condición       |   Mínimo |   Máximo |
-| --------------- | -------: | -------: |
-| 🌡️ Temperatura |    10 °C |    25 °C |
-| 💨 Viento       |   5 km/h |  15 km/h |
-| 💧 Humedad      |     30 % |     80 % |
-| 🌡️ Presión     | 1000 hPa | 1030 hPa |
-
-**Solo muestra `✅ SI` si las cuatro están dentro del rango.** Si una sola está fuera, muestra `❌ NO`.
-
-> Estos rangos son una configuración orientativa para tu proyecto; para una aplicación real, los límites deben ajustarse al producto fitosanitario específico y a su etiqueta/marbete.
