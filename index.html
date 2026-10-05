@@ -111,32 +111,25 @@
             document.getElementById("presion").textContent = presion;
 
 
-            // MITADES DE LOS RANGOS
-
-            const mitadTemperatura = (10 + 25) / 2;   // 17.5
-            const mitadViento = (5 + 15) / 2;         // 10
-            const mitadHumedad = (30 + 80) / 2;       // 55
-            const mitadPresion = (1000 + 1030) / 2;   // 1015
-
-
             // CÍRCULOS AMARILLOS
+            // Aparecen cuando el valor es mayor o igual al mínimo
 
-            if (Math.abs(temperatura - mitadTemperatura) <= 2) {
+            if (temperatura >= 10) {
                 document.getElementById("circuloTemperatura").className =
                     "circulo amarillo";
             }
 
-            if (Math.abs(viento - mitadViento) <= 1) {
+            if (viento >= 5) {
                 document.getElementById("circuloViento").className =
                     "circulo amarillo";
             }
 
-            if (Math.abs(humedad - mitadHumedad) <= 5) {
+            if (humedad >= 30) {
                 document.getElementById("circuloHumedad").className =
                     "circulo amarillo";
             }
 
-            if (Math.abs(presion - mitadPresion) <= 3) {
+            if (presion >= 1000) {
                 document.getElementById("circuloPresion").className =
                     "circulo amarillo";
             }
