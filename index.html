@@ -1,34 +1,188 @@
-const todoOK =
-    temperaturaOK &&
-    vientoOK &&
-    humedadOK &&
-    presionOK;
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Condiciones para fumigar</title>
 
-const precaucion =
-    Math.abs(temperatura - mitadTemperatura) <= 2 ||
-    Math.abs(viento - mitadViento) <= 1 ||
-    Math.abs(humedad - mitadHumedad) <= 5 ||
-    Math.abs(presion - mitadPresion) <= 3;
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2196f3">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: #f2f7ff;
+            margin: 0;
+            padding: 30px;
+        }
+
+        h1 {
+            color: #2196f3;
+        }
+
+        .dato {
+            background: white;
+            margin: 15px auto;
+            padding: 15px;
+            max-width: 450px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .dato strong {
+            display: block;
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .circulo {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+
+        .amarillo {
+            background-color: yellow;
+        }
+
+        #resultado {
+            font-size: 30px;
+            font-weight: bold;
+            margin-top: 25px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>🌱 Condiciones para fumigar</h1>
+
+    <div class="dato">
+        <strong>🌡️ Temperatura</strong>
+        <span id="temperatura">Cargando...</span> °C
+        <span id="circuloTemperatura"></span>
+    </div>
+
+    <div class="dato">
+        <strong>💨 Viento</strong>
+        <span id="viento">Cargando...</span> km/h
+        <span id="circuloViento"></span>
+    </div>
+
+    <div class="dato">
+        <strong>💧 Humedad</strong>
+        <span id="humedad">Cargando...</span> %
+        <span id="circuloHumedad"></span>
+    </div>
+
+    <div class="dato">
+        <strong>🌡️ Presión</strong>
+        <span id="presion">Cargando...</span> hPa
+        <span id="circuloPresion"></span>
+    </div>
+
+    <div class="dato">
+        <strong>¿Se puede fumigar?</strong>
+        <span id="resultado">⏳</span>
+    </div>
+
+    <script>
+
+        fetch("https://api.open-meteo.com/v1/forecast?latitude=-32.365&longitude=-62.312&current=temperature_2m,relative_humidity_2m,pressure_msl,wind_speed_10m&wind_speed_unit=kmh")
+
+        .then(respuesta => respuesta.json())
+
+        .then(datos => {
+
+            const clima = datos.current;
+
+            const temperatura = clima.temperature_2m;
+            const viento = clima.wind_speed_10m;
+            const humedad = clima.relative_humidity_2m;
+            const presion = clima.pressure_msl;
+
+            document.getElementById("temperatura").textContent = temperatura;
+            document.getElementById("viento").textContent = viento;
+            document.getElementById("humedad").textContent = humedad;
+            document.getElementById("presion").textContent = presion;
 
 
-if (todoOK && precaucion) {
+            // MITADES DE LOS RANGOS
 
-    document.getElementById("resultado").textContent =
-        "🟡 SE PUEDE CON PRECAUCIÓN";
+            const mitadTemperatura = (10 + 25) / 2;   // 17.5
+            const mitadViento = (5 + 15) / 2;         // 10
+            const mitadHumedad = (30 + 80) / 2;       // 55
+            const mitadPresion = (1000 + 1030) / 2;   // 1015
 
-    document.getElementById("resultado").style.color = "#d6a600";
 
-} else if (todoOK) {
+            // CÍRCULOS AMARILLOS
 
-    document.getElementById("resultado").textContent =
-        "✅ SE PUEDE FUMIGAR";
+            if (Math.abs(temperatura - mitadTemperatura) <= 2) {
+                document.getElementById("circuloTemperatura").className =
+                    "circulo amarillo";
+            }
 
-    document.getElementById("resultado").style.color = "green";
+            if (Math.abs(viento - mitadViento) <= 1) {
+                document.getElementById("circuloViento").className =
+                    "circulo amarillo";
+            }
 
-} else {
+            if (Math.abs(humedad - mitadHumedad) <= 5) {
+                document.getElementById("circuloHumedad").className =
+                    "circulo amarillo";
+            }
 
-    document.getElementById("resultado").textContent =
-        "❌ NO SE PUEDE FUMIGAR";
+            if (Math.abs(presion - mitadPresion) <= 3) {
+                document.getElementById("circuloPresion").className =
+                    "circulo amarillo";
+            }
 
-    document.getElementById("resultado").style.color = "red";
-}
+
+            // CONDICIONES
+
+            const temperaturaOK = temperatura >= 10 && temperatura <= 25;
+            const vientoOK = viento >= 5 && viento <= 15;
+            const humedadOK = humedad >= 30 && humedad <= 80;
+            const presionOK = presion >= 1000 && presion <= 1030;
+
+            const todoOK =
+                temperaturaOK &&
+                vientoOK &&
+                humedadOK &&
+                presionOK;
+
+
+            if (todoOK) {
+
+                document.getElementById("resultado").textContent =
+                    "✅ SE PUEDE FUMIGAR";
+
+                document.getElementById("resultado").style.color = "green";
+
+            } else {
+
+                document.getElementById("resultado").textContent =
+                    "❌ NO SE PUEDE FUMIGAR";
+
+                document.getElementById("resultado").style.color = "red";
+            }
+
+        })
+
+        .catch(error => {
+
+            console.error(error);
+
+            document.getElementById("resultado").textContent =
+                "❌ Error al obtener los datos";
+
+        });
+
+    </script>
+
+</body>
+</html>
