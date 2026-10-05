@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -46,7 +47,7 @@
         }
 
         .amarillo {
-            background-color: yellow;
+            background-color: #ffd900;
         }
 
         #resultado {
@@ -90,6 +91,7 @@
         <span id="resultado">⏳</span>
     </div>
 
+
     <script>
 
         fetch("https://api.open-meteo.com/v1/forecast?latitude=-32.365&longitude=-62.312&current=temperature_2m,relative_humidity_2m,pressure_msl,wind_speed_10m&wind_speed_unit=kmh")
@@ -105,49 +107,100 @@
             const humedad = clima.relative_humidity_2m;
             const presion = clima.pressure_msl;
 
-            document.getElementById("temperatura").textContent = temperatura;
-            document.getElementById("viento").textContent = viento;
-            document.getElementById("humedad").textContent = humedad;
-            document.getElementById("presion").textContent = presion;
+
+            // MOSTRAR DATOS
+
+            document.getElementById("temperatura").textContent =
+                temperatura;
+
+            document.getElementById("viento").textContent =
+                viento;
+
+            document.getElementById("humedad").textContent =
+                humedad;
+
+            document.getElementById("presion").textContent =
+                presion;
 
 
-            // MITADES DE LOS RANGOS
+            // RANGOS PERMITIDOS
 
-            const mitadTemperatura = (10 + 25) / 2;   // 17.5
-            const mitadViento = (5 + 15) / 2;         // 10
-            const mitadHumedad = (30 + 80) / 2;       // 55
-            const mitadPresion = (1000 + 1030) / 2;   // 1015
+            const minTemperatura = 10;
+            const maxTemperatura = 25;
+
+            const minViento = 5;
+            const maxViento = 15;
+
+            const minHumedad = 30;
+            const maxHumedad = 80;
+
+            const minPresion = 1000;
+            const maxPresion = 1030;
+
+
+            // MITAD DE CADA RANGO
+
+            const mitadTemperatura =
+                (minTemperatura + maxTemperatura) / 2;
+
+            const mitadViento =
+                (minViento + maxViento) / 2;
+
+            const mitadHumedad =
+                (minHumedad + maxHumedad) / 2;
+
+            const mitadPresion =
+                (minPresion + maxPresion) / 2;
+
+
+            // CONDICIONES
+
+            const temperaturaOK =
+                temperatura >= minTemperatura &&
+                temperatura <= maxTemperatura;
+
+            const vientoOK =
+                viento >= minViento &&
+                viento <= maxViento;
+
+            const humedadOK =
+                humedad >= minHumedad &&
+                humedad <= maxHumedad;
+
+            const presionOK =
+                presion >= minPresion &&
+                presion <= maxPresion;
 
 
             // CÍRCULOS AMARILLOS
+            // Aparecen cuando está en la mitad o más
 
-            if (Math.abs(temperatura - mitadTemperatura) <= 2) {
+            if (temperatura >= mitadTemperatura && temperaturaOK) {
+
                 document.getElementById("circuloTemperatura").className =
                     "circulo amarillo";
             }
 
-            if (Math.abs(viento - mitadViento) <= 1) {
+            if (viento >= mitadViento && vientoOK) {
+
                 document.getElementById("circuloViento").className =
                     "circulo amarillo";
             }
 
-            if (Math.abs(humedad - mitadHumedad) <= 5) {
+            if (humedad >= mitadHumedad && humedadOK) {
+
                 document.getElementById("circuloHumedad").className =
                     "circulo amarillo";
             }
 
-            if (Math.abs(presion - mitadPresion) <= 3) {
+            if (presion >= mitadPresion && presionOK) {
+
                 document.getElementById("circuloPresion").className =
                     "circulo amarillo";
             }
 
 
-            // CONDICIONES
-
-            const temperaturaOK = temperatura >= 10 && temperatura <= 25;
-            const vientoOK = viento >= 5 && viento <= 15;
-            const humedadOK = humedad >= 30 && humedad <= 80;
-            const presionOK = presion >= 1000 && presion <= 1030;
+            // TODO ESTÁ DENTRO DEL RANGO
 
             const todoOK =
                 temperaturaOK &&
@@ -156,22 +209,48 @@
                 presionOK;
 
 
-            if (todoOK) {
+            // HAY ALGUNA VARIABLE EN LA MITAD O MÁS
+
+            const precaucion =
+                (temperatura >= mitadTemperatura) ||
+                (viento >= mitadViento) ||
+                (humedad >= mitadHumedad) ||
+                (presion >= mitadPresion);
+
+
+            // RESULTADO FINAL
+
+            if (todoOK && precaucion) {
+
+                document.getElementById("resultado").textContent =
+                    "🟡 SE PUEDE CON PRECAUCIÓN";
+
+                document.getElementById("resultado").style.color =
+                    "#d6a600";
+
+            }
+
+            else if (todoOK) {
 
                 document.getElementById("resultado").textContent =
                     "✅ SE PUEDE FUMIGAR";
 
-                document.getElementById("resultado").style.color = "green";
+                document.getElementById("resultado").style.color =
+                    "green";
 
-            } else {
+            }
+
+            else {
 
                 document.getElementById("resultado").textContent =
                     "❌ NO SE PUEDE FUMIGAR";
 
-                document.getElementById("resultado").style.color = "red";
+                document.getElementById("resultado").style.color =
+                    "red";
             }
 
         })
+
 
         .catch(error => {
 
@@ -180,9 +259,13 @@
             document.getElementById("resultado").textContent =
                 "❌ Error al obtener los datos";
 
+            document.getElementById("resultado").style.color =
+                "red";
+
         });
 
     </script>
 
 </body>
 </html>
+```
